@@ -1,0 +1,37 @@
+<<<<<<< HEAD
+
+{% load static %}
+{% include "recipes/partials/head.html" %}
+{% csrf_token %}
+<script src="{% static 'recipes/script/script.js' %}"></script>
+<body>
+    <div class="container">
+        <h1>Lista de Compras</h1>
+        <div>
+            <input type="text" id="item" placeholder="Digite um item">
+            <input type="number" id="quantidade" placeholder="Qtd">
+            <button onclick="addItem()">Adicionar</button>
+        </div>
+        <div id="lista-compras"></div>
+=======
+{% include "recipes/partials/head.html" %}
+
+<body>
+    {% include "recipes/partials/header.html" %}
+
+    <div class="search-container">
+
+        <div class="container">
+            <form action="" class="search-form">
+                <input type="search" name="input" class="search-input">
+                <button type="submit" class="search-button"><i class="fa fa-search" aria-hidden="true"></i></button>
+
+            </form>
+        </div>
+
+>>>>>>> 2c49d046b3788a96df4482ca904ae9eb2a3169c5
+    </div>
+
+</body>
+
+</html>
