@@ -19,6 +19,11 @@ def adicionar_item(request):
         lista = list(ItemListaCompra.objects.values())
 
         return JsonResponse({'lista': lista})
+    elif request.method == 'GET':
+        # Lógica para lidar com solicitações GET, se necessário
+        return HttpResponse("Solicitação GET recebida.")
+    else:
+        return HttpResponse("Método não suportado.", status=405)
 
 @csrf_exempt
 def remover_item(request, item_id):
@@ -32,6 +37,11 @@ def remover_item(request, item_id):
             return JsonResponse({'error': 'Item não encontrado'}, status=404)
         except Exception as e:
             return JsonResponse({'error': 'Erro interno ao remover o item'}, status=500)
+    elif request.method == 'GET':
+        # Lógica para lidar com solicitações GET, se necessário
+        return HttpResponse("Solicitação GET recebida.")
+    else:
+        return HttpResponse("Método não suportado.", status=405)
 
 # Nova view para obter a lista de compras
 def obter_lista(request):
