@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import ItemListaCompra
 
 def home(request):
-<<<<<<< HEAD
     return render(request, 'recipes/pages/home.html', context={
         'list': ItemListaCompra.objects.all(),
     })
@@ -38,13 +37,3 @@ def remover_item(request, item_id):
 def obter_lista(request):
     lista = list(ItemListaCompra.objects.values())
     return JsonResponse({'lista': lista})
-=======
-
-    return render(request, 'recipes/pages/home.html', context={
-        "name": "Everton Farias",
-    })
-
-def my_View(request):
-    return HttpResponse('Mensagem')
-
->>>>>>> 2c49d046b3788a96df4482ca904ae9eb2a3169c5
