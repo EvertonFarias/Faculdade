@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'lista-de-compras'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_90D5E5B1C99D4B18B2BBA04E885CE822 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6AB999C54EB54210A4F8654DAC525BD4 }}
