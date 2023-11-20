@@ -1,8 +1,76 @@
-
-{% load static %}
-{% include "recipes/partials/head.html" %}
 {% csrf_token %}
-<script src="{% static 'recipes/script/script.js' %}"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lista de Compras</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Just+Another+Hand&family=Kaushan+Script&display=swap');
+
+
+
+        body {
+            font-family: 'Just Another Hand', cursive;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: aliceblue;
+
+
+        }
+
+        h1 {
+            font-family: cursive;
+        }
+
+        .container {
+            text-align: center;
+
+        }
+
+        input {
+            padding: 8px;
+            margin-right: 8px;
+        }
+
+        input#quantidade {
+            width: 50px;
+        }
+
+        button {
+            padding: 8px;
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+
+        .lista-item {
+            margin-bottom: 10px;
+            /* Espaçamento entre os itens da lista */
+        }
+
+        #lista-compras {
+            font-size: 35px;
+            margin-top: 20px;
+            border: 1px solid black;
+            box-shadow: 1px 2px 2px rgba(4, 4, 4, 0.244);
+            overflow-y: auto;
+            height: 400px;
+            background-color: white;
+            background-image: url('https://img.freepik.com/vetores-gratis/desenho-de-papel-de-carta-branco-em-branco_53876-118304.jpg?w=360&t=st=1700099301~exp=1700099901~hmac=181775f826854671fa413fb577bc05fbaed149af18e200740a12493709908e93');
+        }
+    </style>
+</head>
+
+
 <body>
     <div class="container">
         <h1>Lista de Compras</h1>
@@ -15,5 +83,108 @@
     </div>
 
 </body>
+    <script>
+            // Função para obter o valor do token CSRF do cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Procura pelo token CSRF no cookie
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 
+    // Função para adicionar um item à lista
+    listaDeCompras = [];
+    function addItem() {
+        const inputElement = document.getElementById('item');
+        const quantidadeElement = document.getElementById('quantidade');
+        const item = inputElement.value.trim();
+        const quantidade = parseInt(quantidadeElement.value) || 1;
+
+        if (item !== '' && quantidade > 0) {
+            fetch('/adicionar-item/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: new URLSearchParams({ 'item': item, 'quantidade': quantidade })
+            })
+            .then(response => response.json())
+            .then(data => {
+                listaDeCompras = data.lista;
+                renderLista();
+            });
+
+            inputElement.value = '';
+            quantidadeElement.value = '';
+        }
+    }
+
+    // Função para remover um item da lista
+    function removeItem(id) {
+        fetch(`/remover-item/${id}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            listaDeCompras = data.lista;
+            renderLista();
+        })
+        .catch(error => {
+            console.error('Erro durante a remoção do item:', error);
+        });
+    }
+
+    // Função para renderizar a lista na div correspondente
+    function renderLista() {
+        const listaDiv = document.getElementById('lista-compras');
+        listaDiv.innerHTML = '';
+
+        listaDeCompras.forEach((itemObj, index) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'lista-item';
+            itemDiv.innerHTML = `${itemObj.item} (${itemObj.quantidade}) <button onclick="removeItem(${itemObj.id})">Remover</button>`;
+            listaDiv.appendChild(itemDiv);
+        });
+    }
+
+
+
+    // Função para carregar a lista quando a página é carregada ou recarregada
+    function loadLista() {
+        fetch('/obter-lista/')
+            .then(response => response.json())
+            .then(data => {
+                listaDeCompras = data.lista;
+                renderLista();
+            })
+            .catch(error => {
+                console.error('Erro ao carregar a lista de compras:', error);
+            });
+    }
+
+    // Chama loadLista assim que a página é carregada
+    document.addEventListener('DOMContentLoaded', function () {
+        loadLista();
+    });
+
+    // Renderiza a lista novamente quando a página é recarregada
+    window.addEventListener('load', function () {
+        loadLista();
+    });
+
+    </script>
 </html>
